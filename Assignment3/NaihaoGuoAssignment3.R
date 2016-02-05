@@ -21,6 +21,7 @@ class(df.ex)
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 #Question 2
+install.packages("dplyr")
 require(dplyr)
 df.ex.2<- df.ex %>%
   dplyr::filter(
@@ -68,12 +69,9 @@ df.ex.5b<-mutate(
 #Question 6
 G<-group_by(df.ex,year,month,state)
 df.ex.6<-summarise(G,
-                   min=min(rw,na.rm=T),
-                   firstQ=quantile(rw,0.25,na.rm=T),
-                   mean=mean(rw,na.rm=T),
-                   thirdQ=quantile(rw,0.75,na.rm=T),
-                   max=max(rw,na.rm=T),
-                   total=n())
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
-#Question 7
+   min=min(rw,na.rm=T),
+   firstQ=quantile(rw,0.25,na.rm=T),
+   mean=mean(rw,na.rm=T),
+   thirdQ=quantile(rw,0.75,na.rm=T),
+   max=max(rw,na.rm=T),
+   total=n())
