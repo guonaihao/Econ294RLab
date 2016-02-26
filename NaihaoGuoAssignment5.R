@@ -48,8 +48,10 @@ d1<-d %>% group_by(year,month) %>%
   mutate(date = paste(year,month,"01",sep = "-"),
          date = as.Date(date, format = "%Y-%m-%d"))
 Q3a<-ggplot(d1,aes(x=date,y=Median.RW))
-Q3a+geom_line()+geom_ribbon(aes(ymin=d.one, ymax=d.nine),alpha=0.2
-              )+geom_ribbon(aes(ymin=q.1, ymax=9.3),alpha=0.6)
+Q3a+geom_ribbon(aes(ymin=d.one,ymax=d.nine
+                ),alpha=0.5)+geom_ribbon(aes(ymin=q.1,ymax=q.3
+                  ),alpha=0.3)+geom_line(aes(y=Median.RW))+lims(y=c(0,50))
+
 #Part B
 d2<- d %>% group_by(year,month,educ) %>% 
   summarize(Median.RW=median(rw,na.rm=T)) %>%
