@@ -153,7 +153,8 @@ From the above model ouput,  there are some destinations would significantly eff
 ```{r}
 tmp <- group_by(flights, dest) %>% summarise(meandelay = mean(dep_delay,na.rm=TRUE))
 tmp <- as.data.frame(tmp)
-fig <- ggplot(tmp, aes(x= dest,y=meandelay)) + geom_bar(stat="identity",fill ="skyblue") + theme(axis.text.x=element_text(angle = 90))
+fig <- ggplot(tmp, aes(x= dest,y=meandelay)) + geom_bar(stat="identity",fill ="skyblue") + 
+                                                theme(axis.text.x=element_text(angle = 90))
 fig
 dest.cancel.fit <- glm(canceled ~ dest, data= flights_delay, family = binomial(link = "logit"))
 summary(dest.cancel.fit )
