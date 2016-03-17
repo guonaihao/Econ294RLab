@@ -2,7 +2,7 @@
 title: "Econ294 Final Exam Report"
 author: "Naihao Guo"
 date: "2016/03/16"
-output: html_document
+output: pdf_document
 ---
 
 __Starting__
