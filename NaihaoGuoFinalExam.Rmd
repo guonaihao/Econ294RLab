@@ -22,12 +22,14 @@ __a) weather__
 my_db2 <- src_sqlite("db.sqlite12", create = T)
 weather_sqlite <- copy_to(my_db2, weather, temporary = FALSE, indexes = list(
   c("year", "month", "day"), "origin"))
-flights_delay <- tbl(my_db, sql("SELECT * FROM flights"))%>% collect()%>% mutate(canceled=is.na(arr_time))
+flights_delay <- tbl(my_db, sql(
+  "SELECT * FROM flights"))%>% collect()%>% mutate(canceled=is.na(arr_time))
 weather <- tbl(my_db2, sql("SELECT * FROM weather"))%>% collect()
 weather_delay_cancel <- inner_join(flights_delay,weather)
 weather_delay_cancel <- as.data.frame(weather_delay_cancel)
 
-weather.dep.fit <- lm(dep_delay ~ temp +  humid + wind_speed + visib, data = weather_delay_cancel)
+weather.dep.fit <- lm(dep_delay ~ temp +  humid + wind_speed + visib,
+                      data = weather_delay_cancel)
 summary(weather.dep.fit)
 ```
 
@@ -35,7 +37,9 @@ From the above output, we could see that departure delay in year 2003 is effecte
 
 
 ```{r,warning=FALSE,eval=TRUE,message=FALSE}
-weather.cancel.fit <- glm(canceled ~ temp +  humid + wind_speed + visib, data = weather_delay_cancel, family = binomial(link="logit"))
+weather.cancel.fit <- glm(
+  canceled ~ temp +  humid + wind_speed + visib,
+  data = weather_delay_cancel, family = binomial(link="logit"))
 summary(weather.cancel.fit)
 ```
 
@@ -50,7 +54,8 @@ flights_delay2 <- tbl(my_db, sql("SELECT * FROM flights"))%>% mutate(canceled = 
 flights_delay2 <- as.data.frame(flights_delay)
 flights_delay_df <- tapply(flights_delay2$dep_delay,flights_delay2$hour, mean, na.rm=T )
 flights_delay_df2 <- data.frame(hour=0:24, meandelay=flights_delay_df)
-fig <- ggplot(flights_delay_df2 , aes(x= factor(hour),y=meandelay)) + geom_bar(stat="identity", fill = "skyblue")
+fig <- ggplot(flights_delay_df2 , aes(
+  x= factor(hour),y=meandelay)) + geom_bar(stat="identity", fill ="skyblue")
 fig
 time.dep.fit.hour <- lm(dep_delay ~ hour,data = flights_delay)
 summary(time.dep.fit.hour)
@@ -61,7 +66,7 @@ From the mean value departure delay and hours barplot, it can be seen hour seems
 From the output of the model, We can see that the p value of hour is very close to 0, so the hour is significant factor effect departure delay, and one additional hour is associated with 1.6594 minuses increase in departure delay.
 
 ```{r}
-time.cancel.fit.hour <- glm(canceled ~ as.factor(hour),data = flights_delay, family = binomial(link = "logit"))
+time.cancel.fit.hour <- glm(canceled ~ as.factor(hour), data = flights_delay, family = binomial(link ="logit"))
 summary(time.cancel.fit.hour)
 ```
 
@@ -75,7 +80,8 @@ summary(time.dep.fit.month)
 We can see that the p value of month is close to 0, so the month is significant factor effect departure delay, and one additional month is associated with -0.23634 minuses increase in departure delay.
 
 ```{r}
-time.cancel.fit.month <- glm(canceled ~ as.factor(month),data = flights_delay, family = binomial(link = "logit"))
+time.cancel.fit.month <- glm(canceled ~ as.factor(month),
+                             data = flights_delay, family = binomial(link ="logit"))
 summary(time.cancel.fit.month)
 ```
 
@@ -83,7 +89,8 @@ So now we can see that Feb, Mar, Apr, June, July, and Dec significantly affect t
 
 
 ```{r}
-flights_delay$quarter <- ifelse(flights_delay$month %in% c(1,2,3),1, ifelse(flights_delay$month %in% c(4,5,6),2, ifelse(flights_delay$month %in% c(7,8,9),3,4)))
+flights_delay$quarter <- ifelse(flights_delay$month %in% c(1,2,3),1, ifelse(
+  flights_delay$month %in% c(4,5,6),2, ifelse(flights_delay$month %in% c(7,8,9),3,4)))
 
 time.dep.fit.quarter <- lm(dep_delay ~ quarter,data = flights_delay)
 summary(time.dep.fit.quarter)
@@ -92,7 +99,8 @@ summary(time.dep.fit.quarter)
 We can see that the p value of quarter is 2e-16 < 0.05, so the quarter is significant factor effect departure delay, and one additional quarter is associated with -0.86477  minuses increase in departure delay.
 
 ```{r}
-time.cancel.fit.quarter <- glm(canceled ~ as.factor(quarter) ,data = flights_delay, family = binomial(link = "logit"))
+time.cancel.fit.quarter <- glm(canceled ~ as.factor(quarter),
+                               data = flights_delay, family = binomial(link = "logit"))
 summary(time.cancel.fit.quarter )
 ```
 
@@ -105,7 +113,8 @@ days <- ifelse(flights_delay$day < 10, paste0("0",flights_delay$day),flights_del
 flights_delay$dayofweek <- strftime(as.Date(paste0(flights_delay$year,"-",months,"-",days)),"%u")
 flights_delay_df <- tapply(flights_delay$dep_delay,flights_delay$dayofweek, mean, na.rm=T )
 flights_delay_df2 <- data.frame(dayofweek=1:7, meandelay=flights_delay_df)
-fig <- ggplot(flights_delay_df2 , aes(x= factor(dayofweek),y=meandelay)) + geom_bar(stat="identity", fill = "skyblue")
+fig <- ggplot(flights_delay_df2 , aes(
+  x= factor(dayofweek),y=meandelay)) + geom_bar(stat="identity", fill = "skyblue")
 fig
 time.dep.fit.dayofweek <- lm(dep_delay ~ as.integer(dayofweek),data = flights_delay)
 summary(time.dep.fit.dayofweek)
@@ -116,7 +125,8 @@ From the mean value departure delay and day of week barplot, it can be seen day 
 From the model output, We can see that the p value of dayofweek is less than 0.05, so the dayofweek is a significant factor effect departure delay.
 
 ```{r}
-time.cancel.fit.dayofweek <- glm(canceled ~ as.integer(dayofweek) ,data = flights_delay, family = binomial(link = "logit"))
+time.cancel.fit.dayofweek <- glm(canceled ~ as.integer(dayofweek),
+                                 data = flights_delay, family = binomial(link = "logit"))
 summary(time.cancel.fit.dayofweek)
 ```
 
@@ -128,7 +138,8 @@ __c) airport destination__
 
 
 ```{r,warning=FALSE,eval=TRUE,message=FALSE}
-flights_delay <- tbl(my_db, sql("SELECT dep_delay,arr_time, year, dest FROM flights")) %>% filter(year == 2013) %>% mutate(canceled = is.na(arr_time))
+flights_delay <- tbl(my_db, sql("SELECT dep_delay,arr_time, year, dest FROM flights")
+                     ) %>% filter(year == 2013) %>% mutate(canceled = is.na(arr_time))
 flights_delay <- as.data.frame(flights_delay)
 dest.dep.fit <- lm(dep_delay ~ dest, data= flights_delay)
 summary(dest.dep.fit)
@@ -142,7 +153,7 @@ From the above model ouput,  there are some destinations would significantly eff
 ```{r}
 tmp <- group_by(flights, dest) %>% summarise(meandelay = mean(dep_delay,na.rm=TRUE))
 tmp <- as.data.frame(tmp)
-fig <- ggplot(tmp, aes(x= dest,y=meandelay)) + geom_bar(stat="identity", fill = "skyblue") + theme(axis.text.x=element_text(angle = 90))
+fig <- ggplot(tmp, aes(x= dest,y=meandelay)) + geom_bar(stat="identity",fill ="skyblue") + theme(axis.text.x=element_text(angle = 90))
 fig
 dest.cancel.fit <- glm(canceled ~ dest, data= flights_delay, family = binomial(link = "logit"))
 summary(dest.cancel.fit )
@@ -157,11 +168,13 @@ __d) characteristics of the plane__
 ```{r,warning=FALSE,eval=TRUE,message=FALSE}
 
 
-flights_delay <- tbl(my_db, sql("SELECT dep_delay,arr_time, year,tailnum FROM flights")) %>% filter(year == 2013) %>% mutate(canceled = is.na(arr_time))
+flights_delay <- tbl(my_db, sql("SELECT dep_delay,arr_time, year,tailnum FROM flights")
+                     )%>%filter(year == 2013) %>% mutate(canceled = is.na(arr_time))
 flights_delay <- flights_delay %>% left_join(planes, by = "tailnum", copy = TRUE)
 tmp<- group_by(flights_delay, manufacturer) %>% summarise(meandelay = mean(dep_delay))
 tmp <- as.data.frame(tmp)
-fig <- ggplot(tmp, aes(x= manufacturer,y=meandelay)) + geom_bar(stat="identity", fill = "skyblue") + theme(axis.text.x=element_text(angle = 90))
+fig <- ggplot(tmp, aes(x= manufacturer,y=meandelay)) + geom_bar(
+  stat="identity",fill ="skyblue") + theme(axis.text.x=element_text(angle = 90))
 fig
 flights_delay <- as.data.frame(flights_delay)
 plane.dep.fit <- lm(dep_delay ~  type + manufacturer + engines + engine, data= flights_delay)
@@ -174,7 +187,8 @@ From the model ouput, manufacturer LAMBERT RICHARD and SIKORSKY  has significant
 
 
 ```{r,warning=FALSE,eval=TRUE,message=FALSE}
-plane.cancel.fit <- glm(canceled ~  type + manufacturer + engines + engine, data= flights_delay, family = binomial(link = "logit"))
+plane.cancel.fit <- glm(canceled ~  type + manufacturer + engines + engine,
+                        data= flights_delay, family = binomial(link = "logit"))
 summary(plane.cancel.fit)
 ```
 
