@@ -195,6 +195,6 @@ summary(plane.cancel.fit)
 As from the output, we can see almost all of the factors are not significant factors with p values greater than 0.05, except engines has a very small p value, so it is a significant factor effect on cancelation.
 
 
-At last, it is expect takeoff delays at New York City airports in 2013 when Temperature  and Relative humidity are high, and the time may be some midnight in second half year and when the destinations are for example ALB and so on, if we know more about the planes, then if the plane is made by LAMBERT RICHARD and SIKORSKY and has a Reciprocating type engine. As for cancellations, it is with larger probability when it is weekend in second half year, one more interesting condition is when the plane have many engines.
+In conclusion, the idea about the expectations for takeoff delays, at New York City airports in 2013, is when Temperature and Relative humidity are high and the time during some midnights in second half year, and when the destinations are for example ALB and etc. Also, if the plane is made by LAMBERT RICHARD and SIKORSKY and has a Reciprocating type engine. As for cancellations, there is a larger probability for canceled flights when there were weekends in second half year, and one more interesting condition is when the plane have many engines.
 
 
